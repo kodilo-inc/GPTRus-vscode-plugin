@@ -1,0 +1,1 @@
+# yandexGPT-vscode-plugin
