@@ -88,11 +88,16 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
             vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css')
         );
 
+        // Use a nonce to only allow a specific script to be run.
+        const nonce = getNonce();
+
         return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
 				<meta charset="UTF-8">
 		
+
+				<meta http-equiv="Content-Security-Policy" Content-Security-Policy: default-src "self"; connect-src "self" https://llm.api.cloud.yandex.net; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -110,7 +115,20 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
 				<button class="add-color-button">Send</button>
 
+                <script nonce="${nonce}" src="${scriptUri}"></script>
+
+
 			</body>
 			</html>`;
     }
+}
+
+function getNonce() {
+    let text = '';
+    const possible =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (let i = 0; i < 32; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+    return text;
 }
