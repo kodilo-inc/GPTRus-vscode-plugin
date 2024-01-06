@@ -94,6 +94,8 @@
     function sendMessage() {
         console.log('message sent');
 
+        const userMessage = document.getElementById('input')?.value;
+
         const newPost = {
             modelUri: 'gpt://b1g1tt95jarp1kbk20vf/yandexgpt-lite',
             completionOptions: {
@@ -103,25 +105,19 @@
             },
             messages: [
                 {
-                    role: 'system',
-                    text: 'Ты умный ассистент',
-                },
-                {
                     role: 'user',
-                    text: 'Привет! Как мне подготовиться к экзаменам?',
-                },
-                {
-                    role: 'assistant',
-                    text: 'Привет! По каким предметам?',
-                },
-                {
-                    role: 'user',
-                    text: 'Математике и физике',
+                    text: userMessage,
                 },
             ],
         };
 
-        fetch('https://functions.yandexcloud.net/d4eanashk6ba10erh7g5')
+        fetch('https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newPost),
+        })
             .then((response) => response.json())
             .then(({ result }) => {
                 console.log(result);
