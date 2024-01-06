@@ -121,24 +121,12 @@
             ],
         };
 
-        fetch(
-            'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
-            {
-                method: 'POST', // Здесь так же могут быть GET, PUT, DELETE
-                body: JSON.stringify(newPost), // Тело запроса в JSON-формате
-                headers: {
-                    // Добавляем необходимые заголовки
-                    'content-type': 'application/json',
-                    Authorization:
-                        'Api-Key AQVN2Vz25vE5ecbZhyC_ph69EzA18wPmakXH-Dyc',
-                    'x-folder-id': 'b1g1tt95jarp1kbk20vf',
-                },
-            }
-        )
+        fetch('https://functions.yandexcloud.net/d4eanashk6ba10erh7g5')
             .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                // {title: "foo", body: "bar", userId: 1, id: 101}
+            .then(({ result }) => {
+                console.log(result);
+                document.getElementById('response-box').textContent =
+                    result?.alternatives?.[0]?.message?.text;
             });
     }
 })();

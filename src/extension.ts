@@ -110,7 +110,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 			<body>
 				<ul class="color-list">
 				</ul>
-				<div class=chat-box></div>
+				<div id="response-box" class="chat-box"></div>
 				<textarea id="input" rows="5" cols="33"></textarea>
 
 				<button class="add-color-button">Send</button>
