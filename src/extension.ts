@@ -1,19 +1,16 @@
 import * as vscode from 'vscode';
 
 export function activate(context: vscode.ExtensionContext) {
-    const provider = new ColorsViewProvider(context.extensionUri);
+    const provider = new ColorsViewProvider(
+        context.extensionUri,
+        context.globalState
+    );
 
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
             ColorsViewProvider.viewType,
             provider
         )
-    );
-
-    context.subscriptions.push(
-        vscode.commands.registerCommand('calicoColors.addColor', () => {
-            provider.addColor();
-        })
     );
 
     context.subscriptions.push(
@@ -28,7 +25,10 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
     private _view?: vscode.WebviewView;
 
-    constructor(private readonly _extensionUri: vscode.Uri) {}
+    constructor(
+        private readonly _extensionUri: vscode.Uri,
+        private globalState: vscode.ExtensionContext['globalState']
+    ) {}
 
     public resolveWebviewView(
         webviewView: vscode.WebviewView,
@@ -46,23 +46,26 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-        webviewView.webview.onDidReceiveMessage((data) => {
+        webviewView.webview.onDidReceiveMessage(async (data) => {
             switch (data.type) {
-                case 'colorSelected': {
-                    vscode.window.activeTextEditor?.insertSnippet(
-                        new vscode.SnippetString(`#${data.value}`)
-                    );
+                case 'askUserForApiToken': {
+                    const result = await vscode.window.showInputBox({
+                        value: 'abcdef',
+                        valueSelection: [2, 4],
+                        placeHolder: 'For example: fedcba. But not: 123',
+                        validateInput: (text) => {
+                            vscode.window.showInformationMessage(
+                                `Validating: ${text}`
+                            );
+                            return text === '123' ? 'Not 123!' : null;
+                        },
+                    });
+                    await this.globalState.update('yandex-gpt-api-key', result);
+                    vscode.window.showInformationMessage(`API token saved`);
                     break;
                 }
             }
         });
-    }
-
-    public addColor() {
-        if (this._view) {
-            this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-            this._view.webview.postMessage({ type: 'addColor' });
-        }
     }
 
     public clearColors() {
@@ -114,6 +117,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 				<textarea id="input" rows="5" cols="33"></textarea>
 
 				<button class="add-color-button">Send</button>
+				<button id="set-api-token" class="add-color-button">Set API token</button>
 
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 

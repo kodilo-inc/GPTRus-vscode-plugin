@@ -4,6 +4,10 @@
     // eslint-disable-next-line no-undef
     const vscode = acquireVsCodeApi();
 
+    document.getElementById('set-api-token').addEventListener('click', () => {
+        vscode.postMessage({ type: 'askUserForApiToken' });
+    });
+
     document
         .querySelector('.add-color-button')
         ?.addEventListener('click', () => {
