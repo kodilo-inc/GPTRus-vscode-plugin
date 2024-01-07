@@ -14,9 +14,19 @@
             sendMessage();
         });
 
-    function sendMessage() {
-        console.log('message sent');
+    // Handle messages sent from the extension to the webview
+    window.addEventListener('message', (event) => {
+        const message = event.data; // The json data that the extension sent
+        switch (message.type) {
+            case 'showMessageFromGpt': {
+                document.getElementById('response-box').textContent =
+                    message.message.alternatives?.[0]?.message?.text;
+                break;
+            }
+        }
+    });
 
+    function sendMessage() {
         const userMessage = document.getElementById('input')?.value;
 
         const newPost = {
@@ -34,18 +44,6 @@
             ],
         };
 
-        fetch('https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newPost),
-        })
-            .then((response) => response.json())
-            .then(({ result }) => {
-                console.log(result);
-                document.getElementById('response-box').textContent =
-                    result?.alternatives?.[0]?.message?.text;
-            });
+        vscode.postMessage({ type: 'sendMessage', message: newPost });
     }
 })();

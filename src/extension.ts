@@ -14,9 +14,12 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('calicoColors.clearColors', () => {
-            provider.clearColors();
-        })
+        vscode.commands.registerCommand(
+            'calicoColors.showMessageFromGpt',
+            (resp) => {
+                provider.showMessageFromGpt(resp);
+            }
+        )
     );
 }
 
@@ -64,13 +67,35 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                     vscode.window.showInformationMessage(`API token saved`);
                     break;
                 }
+                case 'sendMessage': {
+                    fetch(
+                        'https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt',
+                        {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(data.message),
+                        }
+                    )
+                        .then((response) => response.json())
+                        .then(({ result }) => {
+                            vscode.commands.executeCommand(
+                                'calicoColors.showMessageFromGpt',
+                                result
+                            );
+                        });
+                }
             }
         });
     }
 
-    public clearColors() {
+    public showMessageFromGpt(resp: string) {
         if (this._view) {
-            this._view.webview.postMessage({ type: 'clearColors' });
+            this._view.webview.postMessage({
+                type: 'showMessageFromGpt',
+                message: resp,
+            });
         }
     }
 
