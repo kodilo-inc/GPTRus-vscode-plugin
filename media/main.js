@@ -17,10 +17,35 @@
     // Handle messages sent from the extension to the webview
     window.addEventListener('message', (event) => {
         const message = event.data; // The json data that the extension sent
+        console.log(1, 'message');
         switch (message.type) {
             case 'showMessageFromGpt': {
                 document.getElementById('response-box').textContent =
                     message.message.alternatives?.[0]?.message?.text;
+                break;
+            }
+            case 'initView': {
+                if (message.message === 'home') {
+                    document
+                        .getElementById('set-api-token')
+                        .classList.remove('hide');
+                    document
+                        .getElementById('chat-area')
+                        .classList.remove('hide');
+                    document.getElementById('chat-area').classList.add('hide');
+                } else if (message.message === 'chat') {
+                    document
+                        .getElementById('set-api-token')
+                        .classList.remove('hide');
+                    document
+                        .getElementById('chat-area')
+                        .classList.remove('hide');
+                    document
+                        .getElementById('set-api-token')
+                        .classList.add('hide');
+                } else {
+                    console.error('что-то не то пришло', message);
+                }
                 break;
             }
         }

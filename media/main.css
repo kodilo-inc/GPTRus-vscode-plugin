@@ -43,3 +43,7 @@ body {
 	border: 1px solid gray;
 	min-height: 50px
 }
+
+.hide {
+	display: none;
+}

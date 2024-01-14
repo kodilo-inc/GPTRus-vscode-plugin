@@ -1,4 +1,4 @@
-module.exports.handler = async function (event) {
+module.exports.handler = async function (event, context) {
     const resp = await fetch(
         'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
         {
@@ -7,7 +7,7 @@ module.exports.handler = async function (event) {
             headers: {
                 // Добавляем необходимые заголовки
                 'content-type': 'application/json',
-                Authorization: `Api-Key ${process.env.API_KEY}`,
+                Authorization: `Api-Key ${event.headers.Authorization}`,
                 'x-folder-id': `${process.env.FOLDER_ID}`,
             },
         }

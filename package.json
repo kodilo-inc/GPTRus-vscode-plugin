@@ -49,16 +49,16 @@
 				"title": "Add Color"
 			},
 			{
-				"command": "calicoColors.clearColors",
+				"command": "calicoColors.askApiKey",
 				"category": "Calico Colors",
-				"title": "Clear Colors",
-				"icon": "$(clear-all)"
+				"title": "Изменить API-ключ",
+				"icon": "$(plug)"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
-					"command": "calicoColors.clearColors",
+					"command": "calicoColors.askApiKey",
 					"group": "navigation",
 					"when": "view == calicoColors.colorsView"
 				}

@@ -21,6 +21,17 @@ export function activate(context: vscode.ExtensionContext) {
             }
         )
     );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('calicoColors.initView', (resp) => {
+            provider.initView(resp);
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('calicoColors.askApiKey', (resp) => {
+            provider.askApiKey();
+        })
+    );
 }
 
 class ColorsViewProvider implements vscode.WebviewViewProvider {
@@ -52,19 +63,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage(async (data) => {
             switch (data.type) {
                 case 'askUserForApiToken': {
-                    const result = await vscode.window.showInputBox({
-                        value: 'abcdef',
-                        valueSelection: [2, 4],
-                        placeHolder: 'For example: fedcba. But not: 123',
-                        validateInput: (text) => {
-                            vscode.window.showInformationMessage(
-                                `Validating: ${text}`
-                            );
-                            return text === '123' ? 'Not 123!' : null;
-                        },
-                    });
-                    await this.globalState.update('yandex-gpt-api-key', result);
-                    vscode.window.showInformationMessage(`API token saved`);
+                    await this.askApiKey();
                     break;
                 }
                 case 'sendMessage': {
@@ -74,6 +73,9 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
+                                Authorization: `${this.globalState.get(
+                                    'yandex-gpt-api-key'
+                                )}`,
                             },
                             body: JSON.stringify(data.message),
                         }
@@ -88,6 +90,10 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                 }
             }
         });
+        vscode.commands.executeCommand(
+            'calicoColors.initView',
+            this.globalState.get('yandex-gpt-api-key') ? 'chat' : 'home'
+        );
     }
 
     public showMessageFromGpt(resp: string) {
@@ -97,6 +103,26 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                 message: resp,
             });
         }
+    }
+    public initView(type: string) {
+        if (this._view) {
+            this._view.webview.postMessage({
+                type: 'initView',
+                message: type,
+            });
+        }
+    }
+
+    public async askApiKey() {
+        const result = await vscode.window.showInputBox({
+            placeHolder: 'Введите API ключ для YandexGPT',
+        });
+        await this.globalState.update('yandex-gpt-api-key', result);
+        vscode.window.showInformationMessage(`API key сохранен`);
+        vscode.commands.executeCommand(
+            'calicoColors.initView',
+            result ? 'chat' : 'home'
+        );
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
@@ -136,13 +162,13 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 				<title>Cat Colors</title>
 			</head>
 			<body>
-				<ul class="color-list">
-				</ul>
-				<div id="response-box" class="chat-box"></div>
-				<textarea id="input" rows="5" cols="33"></textarea>
+				<div id="chat-area" class="hide">
+                    <div id="response-box" class="chat-box"></div>
+                    <textarea id="input" rows="5" cols="33"></textarea>
 
-				<button class="add-color-button">Send</button>
-				<button id="set-api-token" class="add-color-button">Set API token</button>
+                    <button class="add-color-button">Send</button>
+                </div>
+				<button id="set-api-token" class="add-color-button hide">Set API token</button>
 
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 
