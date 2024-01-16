@@ -164,11 +164,11 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 			<body>
 				<div id="chat-area" class="hide">
                     <div id="response-box" class="chat-box"></div>
-                    <textarea id="input" rows="5" cols="33"></textarea>
+                    <textarea id="input" class="user-input" rows="5" cols="33" placeholder="Пиши сюда"></textarea>
 
-                    <button class="add-color-button">Send</button>
+                    <button id="send-btn" class="base-btn">Отправить</button>
                 </div>
-				<button id="set-api-token" class="add-color-button hide">Set API token</button>
+				<button id="set-api-token" class="base-btn hide">Set API token</button>
 
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 

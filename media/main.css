@@ -33,15 +33,20 @@ body {
 	padding: 0 0.6em;
 }
 
-.add-color-button {
+.base-btn {
 	display: block;
 	border: none;
-	margin: 0 auto;
+	margin: 8px auto;
 }
 
 .chat-box {
-	border: 1px solid gray;
-	min-height: 50px
+	margin-bottom: 8px;
+	padding: 4px;
+	min-height: 30px
+}
+
+.user-input {
+	padding: 4px;
 }
 
 .hide {

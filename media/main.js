@@ -8,11 +8,9 @@
         vscode.postMessage({ type: 'askUserForApiToken' });
     });
 
-    document
-        .querySelector('.add-color-button')
-        ?.addEventListener('click', () => {
-            sendMessage();
-        });
+    document.getElementById('send-btn')?.addEventListener('click', () => {
+        sendMessage();
+    });
 
     // Handle messages sent from the extension to the webview
     window.addEventListener('message', (event) => {
