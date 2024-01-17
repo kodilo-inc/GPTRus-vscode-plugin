@@ -169,6 +169,11 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                     <button id="send-btn" class="base-btn">Отправить</button>
                 </div>
 				<button id="set-api-token" class="base-btn hide">Set API token</button>
+                <div id="progress-bar" class="progress-bar hide">
+                    <div class="progress-bar-value"></div>
+                </div>
+
+                
 
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 

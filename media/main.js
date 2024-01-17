@@ -3,23 +3,30 @@
 (function () {
     // eslint-disable-next-line no-undef
     const vscode = acquireVsCodeApi();
+    let isLoading = false;
 
     document.getElementById('set-api-token').addEventListener('click', () => {
         vscode.postMessage({ type: 'askUserForApiToken' });
     });
 
     document.getElementById('send-btn')?.addEventListener('click', () => {
+        if (isLoading) {
+            return;
+        }
+        isLoading = true;
+        document.getElementById('progress-bar').classList.remove('hide');
         sendMessage();
     });
 
     // Handle messages sent from the extension to the webview
     window.addEventListener('message', (event) => {
         const message = event.data; // The json data that the extension sent
-        console.log(1, 'message');
         switch (message.type) {
             case 'showMessageFromGpt': {
                 document.getElementById('response-box').textContent =
                     message.message.alternatives?.[0]?.message?.text;
+                document.getElementById('progress-bar').classList.add('hide');
+                isLoading = false;
                 break;
             }
             case 'initView': {
