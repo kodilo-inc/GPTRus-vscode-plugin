@@ -65,14 +65,28 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                     await this.askApiKey();
                     break;
                 }
+                case 'controllerOnLoaded': {
+                    vscode.commands.executeCommand(
+                        'calicoColors.initView',
+                        this.globalState.get('yandex-gpt-api-key')
+                            ? 'chat'
+                            : 'home'
+                    );
+                    vscode.commands.executeCommand(
+                        'calicoColors.updateChat',
+                        chatState
+                    );
+                    break;
+                }
                 case 'sendMessage': {
-                    const requestData = data.message;
+                    const requestData = { ...data.message };
                     chatState.push(requestData.messages[0]);
                     vscode.commands.executeCommand(
                         'calicoColors.updateChat',
                         chatState
                     );
-                    console.log('chatState before request', chatState);
+                    requestData.messages = chatState;
+
                     fetch(
                         'https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt',
                         {
@@ -98,10 +112,6 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                 }
             }
         });
-        vscode.commands.executeCommand(
-            'calicoColors.initView',
-            this.globalState.get('yandex-gpt-api-key') ? 'chat' : 'home'
-        );
     }
 
     public updateChat(resp: string) {
@@ -134,6 +144,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
+        console.log('_getHtmlForWebview');
         // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
         const scriptUri = webview.asWebviewUri(
             vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js')

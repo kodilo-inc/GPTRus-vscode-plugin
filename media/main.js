@@ -20,6 +20,10 @@
         document.getElementById('input').value = '';
     });
 
+    window.onload = () => {
+        vscode.postMessage({ type: 'controllerOnLoaded' });
+    };
+
     // Handle messages sent from the extension to the webview
     window.addEventListener('message', (event) => {
         const message = event.data; // The json data that the extension sent
