@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 
+const chatState: { role: string; text: string }[] = [];
+
 export function activate(context: vscode.ExtensionContext) {
     const provider = new ColorsViewProvider(
         context.extensionUri,
@@ -14,12 +16,9 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'calicoColors.showMessageFromGpt',
-            (resp) => {
-                provider.showMessageFromGpt(resp);
-            }
-        )
+        vscode.commands.registerCommand('calicoColors.updateChat', (resp) => {
+            provider.updateChat(resp);
+        })
     );
     context.subscriptions.push(
         vscode.commands.registerCommand('calicoColors.initView', (resp) => {
@@ -67,6 +66,13 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                     break;
                 }
                 case 'sendMessage': {
+                    const requestData = data.message;
+                    chatState.push(requestData.messages[0]);
+                    vscode.commands.executeCommand(
+                        'calicoColors.updateChat',
+                        chatState
+                    );
+                    console.log('chatState before request', chatState);
                     fetch(
                         'https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt',
                         {
@@ -77,14 +83,16 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                                     'yandex-gpt-api-key'
                                 )}`,
                             },
-                            body: JSON.stringify(data.message),
+                            body: JSON.stringify(requestData),
                         }
                     )
                         .then((response) => response.json())
                         .then(({ result }) => {
+                            chatState.push(result.alternatives[0].message);
+                            console.log('chatState after response', chatState);
                             vscode.commands.executeCommand(
-                                'calicoColors.showMessageFromGpt',
-                                result
+                                'calicoColors.updateChat',
+                                chatState
                             );
                         });
                 }
@@ -96,10 +104,10 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         );
     }
 
-    public showMessageFromGpt(resp: string) {
+    public updateChat(resp: string) {
         if (this._view) {
             this._view.webview.postMessage({
-                type: 'showMessageFromGpt',
+                type: 'updateChat',
                 message: resp,
             });
         }

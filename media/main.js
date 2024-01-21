@@ -4,6 +4,7 @@
     // eslint-disable-next-line no-undef
     const vscode = acquireVsCodeApi();
     let isLoading = false;
+    let chatState = [];
 
     document.getElementById('set-api-token').addEventListener('click', () => {
         vscode.postMessage({ type: 'askUserForApiToken' });
@@ -16,15 +17,31 @@
         isLoading = true;
         document.getElementById('progress-bar').classList.remove('hide');
         sendMessage();
+        document.getElementById('input').value = '';
     });
 
     // Handle messages sent from the extension to the webview
     window.addEventListener('message', (event) => {
         const message = event.data; // The json data that the extension sent
         switch (message.type) {
-            case 'showMessageFromGpt': {
-                document.getElementById('response-box').textContent =
-                    message.message.alternatives?.[0]?.message?.text;
+            case 'updateChat': {
+                chatState = message.message;
+                console.log('received chatState from view', chatState);
+
+                // create div and insert in inside element with id response-box
+                const responseBox = document.getElementById('response-box');
+                responseBox.replaceChildren();
+                chatState.forEach((element) => {
+                    const div = document.createElement('div');
+                    div.classList.add(
+                        element.role === 'assistant'
+                            ? 'bot-message'
+                            : 'user-message'
+                    );
+                    div.textContent = element.text;
+                    responseBox.appendChild(div);
+                });
+
                 document.getElementById('progress-bar').classList.add('hide');
                 isLoading = false;
                 break;
