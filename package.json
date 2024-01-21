@@ -1,13 +1,13 @@
 {
-	"name": "calico-colors",
-	"description": "Calico Colors - A Webview View API Sample",
+	"name": "GPTRus",
+	"description": "Chat for yandexGPT",
 	"version": "0.0.1",
-	"publisher": "vscode-samples",
-	"private": true,
+	"publisher": "kodilo",
+	"private": false,
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/kodilo-inc/GPTRus-vscode-plugin"
 	},
 	"engines": {
 		"vscode": "^1.74.0"
@@ -17,7 +17,9 @@
 		"workspace"
 	],
 	"categories": [
-		"Other"
+		"Programming Languages",
+		"Machine Learning",
+		"Education"
 	],
 	"activationEvents": [],
 	"main": "./out/extension.js",
