@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-const chatState: { role: string; text: string }[] = [];
+let chatState: { role: string; text: string }[] = [];
 
 export function activate(context: vscode.ExtensionContext) {
     const provider = new ColorsViewProvider(
@@ -29,6 +29,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.commands.registerCommand('calicoColors.askApiKey', (resp) => {
             provider.askApiKey();
+        })
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('calicoColors.clearChat', (resp) => {
+            provider.clearChat();
         })
     );
 }
@@ -141,6 +147,11 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
             'calicoColors.initView',
             result ? 'chat' : 'home'
         );
+    }
+
+    public clearChat() {
+        chatState = [];
+        vscode.commands.executeCommand('calicoColors.updateChat', chatState);
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {

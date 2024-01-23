@@ -55,12 +55,23 @@
 				"category": "Calico Colors",
 				"title": "Изменить API-ключ",
 				"icon": "$(plug)"
+			},
+			{
+				"command": "calicoColors.clearChat",
+				"category": "Calico Colors",
+				"title": "Очистить чат (перестанет использоваться как контекст)",
+				"icon": "$(clear-all)"
 			}
 		],
 		"menus": {
 			"view/title": [
 				{
 					"command": "calicoColors.askApiKey",
+					"group": "navigation",
+					"when": "view == calicoColors.colorsView"
+				},
+				{
+					"command": "calicoColors.clearChat",
 					"group": "navigation",
 					"when": "view == calicoColors.colorsView"
 				}

@@ -45,7 +45,7 @@
                     div.textContent = element.text;
                     responseBox.appendChild(div);
                 });
-                if (chatState[chatState.length - 1].role === 'assistant') {
+                if (chatState[chatState.length - 1]?.role === 'assistant') {
                     document
                         .getElementById('progress-bar')
                         .classList.add('hide');
