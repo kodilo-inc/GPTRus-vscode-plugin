@@ -3,44 +3,44 @@ import * as vscode from 'vscode';
 let chatState: { role: string; text: string }[] = [];
 
 export function activate(context: vscode.ExtensionContext) {
-    const provider = new ColorsViewProvider(
+    const provider = new ChatViewProvider(
         context.extensionUri,
         context.globalState
     );
 
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(
-            ColorsViewProvider.viewType,
+            ChatViewProvider.viewType,
             provider
         )
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('calicoColors.updateChat', (resp) => {
+        vscode.commands.registerCommand('GPTRus.updateChat', (resp) => {
             provider.updateChat(resp);
         })
     );
     context.subscriptions.push(
-        vscode.commands.registerCommand('calicoColors.initView', (resp) => {
+        vscode.commands.registerCommand('GPTRus.initView', (resp) => {
             provider.initView(resp);
         })
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('calicoColors.askApiKey', (resp) => {
+        vscode.commands.registerCommand('GPTRus.askApiKey', (resp) => {
             provider.askApiKey();
         })
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('calicoColors.clearChat', (resp) => {
+        vscode.commands.registerCommand('GPTRus.clearChat', (resp) => {
             provider.clearChat();
         })
     );
 }
 
-class ColorsViewProvider implements vscode.WebviewViewProvider {
-    public static readonly viewType = 'calicoColors.colorsView';
+class ChatViewProvider implements vscode.WebviewViewProvider {
+    public static readonly viewType = 'GPTRus.chatView';
 
     private _view?: vscode.WebviewView;
 
@@ -73,13 +73,13 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                 }
                 case 'controllerOnLoaded': {
                     vscode.commands.executeCommand(
-                        'calicoColors.initView',
+                        'GPTRus.initView',
                         this.globalState.get('yandex-gpt-api-key')
                             ? 'chat'
                             : 'home'
                     );
                     vscode.commands.executeCommand(
-                        'calicoColors.updateChat',
+                        'GPTRus.updateChat',
                         chatState
                     );
                     break;
@@ -88,7 +88,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                     const requestData = { ...data.message };
                     chatState.push(requestData.messages[0]);
                     vscode.commands.executeCommand(
-                        'calicoColors.updateChat',
+                        'GPTRus.updateChat',
                         chatState
                     );
                     requestData.messages = chatState;
@@ -111,7 +111,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
                             chatState.push(result.alternatives[0].message);
                             console.log('chatState after response', chatState);
                             vscode.commands.executeCommand(
-                                'calicoColors.updateChat',
+                                'GPTRus.updateChat',
                                 chatState
                             );
                         });
@@ -144,14 +144,14 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         await this.globalState.update('yandex-gpt-api-key', result);
         vscode.window.showInformationMessage(`API key сохранен`);
         vscode.commands.executeCommand(
-            'calicoColors.initView',
+            'GPTRus.initView',
             result ? 'chat' : 'home'
         );
     }
 
     public clearChat() {
         chatState = [];
-        vscode.commands.executeCommand('calicoColors.updateChat', chatState);
+        vscode.commands.executeCommand('GPTRus.updateChat', chatState);
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
@@ -176,7 +176,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
         const nonce = getNonce();
 
         return `<!DOCTYPE html>
-			<html lang="en">
+			<html lang="ru">
 			<head>
 				<meta charset="UTF-8">
 		
@@ -189,7 +189,7 @@ class ColorsViewProvider implements vscode.WebviewViewProvider {
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleMainUri}" rel="stylesheet">
 
-				<title>Cat Colors</title>
+				<title>Chat GPTRus</title>
 			</head>
 			<body>
 				<div id="chat-area" class="hide">

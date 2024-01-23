@@ -27,7 +27,7 @@
 		"views": {
 			"package-explorer": [
 				{
-					"id": "calicoColors.colorsView",
+					"id": "GPTRus.chatView",
 					"type": "webview",
 					"name": "Calico Colors",
 					"icon": "media/chat-emoji-svgrepo-com.svg",
@@ -46,18 +46,18 @@
 		},
 		"commands": [
 			{
-				"command": "calicoColors.addColor",
+				"command": "GPTRus.addColor",
 				"category": "Calico Colors",
 				"title": "Add Color"
 			},
 			{
-				"command": "calicoColors.askApiKey",
+				"command": "GPTRus.askApiKey",
 				"category": "Calico Colors",
 				"title": "Изменить API-ключ",
 				"icon": "$(plug)"
 			},
 			{
-				"command": "calicoColors.clearChat",
+				"command": "GPTRus.clearChat",
 				"category": "Calico Colors",
 				"title": "Очистить чат (перестанет использоваться как контекст)",
 				"icon": "$(clear-all)"
@@ -66,14 +66,14 @@
 		"menus": {
 			"view/title": [
 				{
-					"command": "calicoColors.askApiKey",
+					"command": "GPTRus.askApiKey",
 					"group": "navigation",
-					"when": "view == calicoColors.colorsView"
+					"when": "view == GPTRus.chatView"
 				},
 				{
-					"command": "calicoColors.clearChat",
+					"command": "GPTRus.clearChat",
 					"group": "navigation",
-					"when": "view == calicoColors.colorsView"
+					"when": "view == GPTRus.chatView"
 				}
 			]
 		}
