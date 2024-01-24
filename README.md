@@ -1,24 +1,7 @@
-# Calico Colors — Webview View API Sample
+# GPTRus (Джипитирус) — расширение для VSCode, которое добавляет интерфейс чата для общения с YandexGPT
 
-Demonstrates VS Code's [webview view API](https://github.com/microsoft/vscode/issues/46585). This includes:
+Для работы нужно иметь аккаунт в Yandex.Cloud и [выписать API-токен](https://cloud.yandex.ru/ru/docs/iam/operations/api-key/create#console_1). 
 
-- Contributing a webview based view to the explorer.
-- Posting messages from an extension to a webview view
-- Posting message from a webview to an extension  
-- Persisting state in the view.
-- Contributing commands to the view title.
+[Тарифы на использование YandexGPT](https://cloud.yandex.ru/ru/docs/yandexgpt/pricing). Это вы платите Яндексу. Использование расширения бесплатно.
 
-## VS Code API
-
-### `vscode` module
-
-- [`window.registerWebviewViewProvider`](https://code.visualstudio.com/api/references/vscode-api#window.registerWebviewViewProvider)
-
-## Running the example
-
-- Open this example in VS Code 1.49+
-- `npm install`
-- `npm run watch` or `npm run compile`
-- `F5` to start debugging
-
-In the explorer, expand the `Calico Colors` view.
+Сейчас есть ограничение: 1 000 000 обращений к боту в месяц. Это суммарное ограничение для всех пользователей расширения суммарно, а не для каждого по отдельности. 
