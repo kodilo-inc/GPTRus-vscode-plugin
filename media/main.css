@@ -84,6 +84,18 @@ body {
   transform-origin: 0% 50%;
 }
 
+.small-text {
+	font-size: 11px;
+}
+
+.settings-input {
+	margin-bottom: 4px;
+}
+
+.home-help-text {
+	margin-top: 24px;
+}
+
 @keyframes indeterminateAnimation {
   0% {
     transform:  translateX(0) scaleX(0);

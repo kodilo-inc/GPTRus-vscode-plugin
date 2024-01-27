@@ -57,7 +57,7 @@
             case 'initView': {
                 if (message.message === 'home') {
                     document
-                        .getElementById('set-api-token')
+                        .getElementById('home-block')
                         .classList.remove('hide');
                     document
                         .getElementById('chat-area')
@@ -65,14 +65,12 @@
                     document.getElementById('chat-area').classList.add('hide');
                 } else if (message.message === 'chat') {
                     document
-                        .getElementById('set-api-token')
+                        .getElementById('home-block')
                         .classList.remove('hide');
                     document
                         .getElementById('chat-area')
                         .classList.remove('hide');
-                    document
-                        .getElementById('set-api-token')
-                        .classList.add('hide');
+                    document.getElementById('home-block').classList.add('hide');
                 } else {
                     console.error('что-то не то пришло', message);
                 }

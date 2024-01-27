@@ -198,15 +198,26 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 
                     <button id="send-btn" class="base-btn">Отправить</button>
                 </div>
-				<button id="set-api-token" class="base-btn hide">Set API token</button>
+                <div id="home-block hide"> 
+                    
+                    <label>API-токен
+                        <input type="text" class="settings-input" id="api-token-input">
+                    </label>
+                    <label>Идентификатор каталога
+                        <input type="text" class="settings-input" id="catalogue-id-input">
+                    </label>
+				    <button id="set-api-token" class="base-btn">Сохранить настройки</button>
+                    <p class="home-help-text small-text">
+                        <a href="https://cloud.yandex.ru/ru/docs/iam/operations/api-key/create">Как получить API-ключ?</a></br>
+                        </br>
+                        <a href="https://cloud.yandex.ru/ru/docs/resource-manager/operations/folder/get-id">Как получить идентификатор каталога?</a>
+                    </p>
+                </div>
                 <div id="progress-bar" class="progress-bar hide">
                     <div class="progress-bar-value"></div>
                 </div>
 
-                
-
                 <script nonce="${nonce}" src="${scriptUri}"></script>
-
 
 			</body>
 			</html>`;
