@@ -8,7 +8,7 @@ module.exports.handler = async function (event, context) {
                 // Добавляем необходимые заголовки
                 'content-type': 'application/json',
                 Authorization: `Api-Key ${event.headers.Authorization}`,
-                'x-folder-id': `${process.env.FOLDER_ID}`,
+                'x-folder-id': `${event.headers['Catalogue-Id']}`,
             },
         }
     );
