@@ -1,6 +1,10 @@
 import * as vscode from 'vscode';
 
 let chatState: { role: string; text: string }[] = [];
+type settings = {
+    token: string;
+    catalogueId: string;
+};
 
 export function activate(context: vscode.ExtensionContext) {
     const provider = new ChatViewProvider(
@@ -27,14 +31,19 @@ export function activate(context: vscode.ExtensionContext) {
     );
 
     context.subscriptions.push(
-        vscode.commands.registerCommand('GPTRus.askApiKey', (resp) => {
-            provider.askApiKey();
+        vscode.commands.registerCommand('GPTRus.saveSettings', (resp) => {
+            provider.saveSettingsInGlobalState(resp);
         })
     );
 
     context.subscriptions.push(
         vscode.commands.registerCommand('GPTRus.clearChat', (resp) => {
             provider.clearChat();
+        })
+    );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('GPTRus.goToSettings', () => {
+            provider.goToSettings();
         })
     );
 }
@@ -67,16 +76,14 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 
         webviewView.webview.onDidReceiveMessage(async (data) => {
             switch (data.type) {
-                case 'askUserForApiToken': {
-                    await this.askApiKey();
+                case 'saveSettings': {
+                    await this.saveSettingsInGlobalState(data.message);
                     break;
                 }
                 case 'controllerOnLoaded': {
                     vscode.commands.executeCommand(
                         'GPTRus.initView',
-                        this.globalState.get('yandex-gpt-api-key')
-                            ? 'chat'
-                            : 'home'
+                        this.globalState.get('settings') ? 'chat' : 'home'
                     );
                     vscode.commands.executeCommand(
                         'GPTRus.updateChat',
@@ -93,15 +100,17 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                     );
                     requestData.messages = chatState;
 
+                    const settings: settings | undefined =
+                        this.globalState.get('settings');
+
                     fetch(
                         'https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt',
                         {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                Authorization: `${this.globalState.get(
-                                    'yandex-gpt-api-key'
-                                )}`,
+                                Authorization: `${settings?.token}`,
+                                'Catalogue-Id': `${settings?.catalogueId}`,
                             },
                             body: JSON.stringify(requestData),
                         }
@@ -137,21 +146,19 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
         }
     }
 
-    public async askApiKey() {
-        const result = await vscode.window.showInputBox({
-            placeHolder: 'Введите API ключ для YandexGPT',
-        });
-        await this.globalState.update('yandex-gpt-api-key', result);
-        vscode.window.showInformationMessage(`API key сохранен`);
-        vscode.commands.executeCommand(
-            'GPTRus.initView',
-            result ? 'chat' : 'home'
-        );
+    public async saveSettingsInGlobalState(settings: settings) {
+        await this.globalState.update('settings', settings);
+        vscode.window.showInformationMessage(`Настройки сохранены`);
+        vscode.commands.executeCommand('GPTRus.initView', 'chat');
     }
 
     public clearChat() {
         chatState = [];
         vscode.commands.executeCommand('GPTRus.updateChat', chatState);
+    }
+
+    public goToSettings() {
+        vscode.commands.executeCommand('GPTRus.initView', 'home');
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {
@@ -198,7 +205,7 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 
                     <button id="send-btn" class="base-btn">Отправить</button>
                 </div>
-                <div id="home-block hide"> 
+                <div id="home-block" class="hide"> 
                     
                     <label>API-токен
                         <input type="text" class="settings-input" id="api-token-input">
@@ -206,7 +213,7 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                     <label>Идентификатор каталога
                         <input type="text" class="settings-input" id="catalogue-id-input">
                     </label>
-				    <button id="set-api-token" class="base-btn">Сохранить настройки</button>
+				    <button id="save-settings" class="base-btn">Сохранить настройки</button>
                     <p class="home-help-text small-text">
                         <a href="https://cloud.yandex.ru/ru/docs/iam/operations/api-key/create">Как получить API-ключ?</a></br>
                         </br>

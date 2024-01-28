@@ -92,6 +92,10 @@ body {
 	margin-bottom: 4px;
 }
 
+input.settings-input__error {
+	background-color: var(--vscode-inputValidation-errorBackground)
+}
+
 .home-help-text {
 	margin-top: 24px;
 }

@@ -5,9 +5,40 @@
     const vscode = acquireVsCodeApi();
     let isLoading = false;
     let chatState = [];
+    const tokenInput = document.getElementById('api-token-input');
+    const catalogueIdInput = document.getElementById('catalogue-id-input');
 
-    document.getElementById('set-api-token').addEventListener('click', () => {
-        vscode.postMessage({ type: 'askUserForApiToken' });
+    tokenInput.addEventListener('input', () => {
+        if (tokenInput.value) {
+            tokenInput.classList.remove('settings-input__error');
+        }
+    });
+    catalogueIdInput.addEventListener('input', () => {
+        if (catalogueIdInput.value) {
+            catalogueIdInput.classList.remove('settings-input__error');
+        }
+    });
+
+    document.getElementById('save-settings').addEventListener('click', () => {
+        let isValidationError = false;
+        if (!tokenInput.value) {
+            tokenInput.classList.add('settings-input__error');
+            isValidationError = true;
+        }
+        if (!catalogueIdInput.value) {
+            catalogueIdInput.classList.add('settings-input__error');
+            isValidationError = true;
+        }
+        if (isValidationError) {
+            return;
+        }
+        vscode.postMessage({
+            type: 'saveSettings',
+            message: {
+                token: tokenInput.value,
+                catalogueId: catalogueIdInput.value,
+            },
+        });
     });
 
     document.getElementById('send-btn')?.addEventListener('click', () => {
