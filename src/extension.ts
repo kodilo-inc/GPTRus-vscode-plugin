@@ -201,7 +201,7 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 			<body>
 				<div id="chat-area" class="hide">
                     <div id="response-box" class="chat-box"></div>
-                    <textarea id="input" class="user-input" rows="5" cols="33" placeholder="Пиши сюда"></textarea>
+                    <textarea id="user-message-input" class="user-input" rows="5" cols="33" placeholder="Пиши сюда"></textarea>
 
                     <button id="send-btn" class="base-btn">Отправить</button>
                 </div>

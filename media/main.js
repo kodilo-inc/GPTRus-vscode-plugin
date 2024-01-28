@@ -7,6 +7,8 @@
     let chatState = [];
     const tokenInput = document.getElementById('api-token-input');
     const catalogueIdInput = document.getElementById('catalogue-id-input');
+    const userMessageInput = document.getElementById('user-message-input');
+    const sendBtn = document.getElementById('send-btn');
 
     tokenInput.addEventListener('input', () => {
         if (tokenInput.value) {
@@ -41,14 +43,14 @@
         });
     });
 
-    document.getElementById('send-btn')?.addEventListener('click', () => {
-        if (isLoading) {
+    sendBtn?.addEventListener('click', () => {
+        if (isLoading || !userMessageInput.value) {
             return;
         }
         isLoading = true;
         document.getElementById('progress-bar').classList.remove('hide');
         sendMessage();
-        document.getElementById('input').value = '';
+        userMessageInput.value = '';
     });
 
     window.onload = () => {
@@ -111,7 +113,7 @@
     });
 
     function sendMessage() {
-        const userMessage = document.getElementById('input')?.value;
+        const userMessage = userMessageInput?.value;
 
         const newPost = {
             modelUri: 'gpt://b1g1tt95jarp1kbk20vf/yandexgpt-lite',
