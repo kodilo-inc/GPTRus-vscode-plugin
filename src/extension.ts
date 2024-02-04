@@ -112,28 +112,27 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                     };
 
                     fetch(
-                        'https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt',
+                        'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
                         {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `${settings?.token}`,
-                                'Catalogue-Id': `${settings?.catalogueId}`,
-                            },
                             body: JSON.stringify(newPost),
+                            headers: {
+                                'content-type': 'application/json',
+                                Authorization: `Api-Key ${settings?.token}`,
+                                'x-folder-id': `${settings?.catalogueId}`,
+                            },
                         }
                     )
                         .then((response) => response.json())
                         .then(({ result }) => {
                             chatState.push(result?.alternatives[0].message);
-                            console.log('chatState after response', chatState);
                             vscode.commands.executeCommand(
                                 'GPTRus.updateChat',
                                 chatState
                             );
                         })
                         .catch((err) => {
-                            console.log('err', err);
+                            console.log('error', err);
                         });
                 }
             }
