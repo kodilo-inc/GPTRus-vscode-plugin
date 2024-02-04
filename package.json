@@ -5,6 +5,7 @@
 	"publisher": "kodilo",
 	"private": false,
 	"license": "MIT",
+	"icon": "media/icon.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/kodilo-inc/GPTRus-vscode-plugin"
