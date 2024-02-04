@@ -234,6 +234,7 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                     <div class="progress-bar-value"></div>
                 </div>
 
+                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 
 			</body>

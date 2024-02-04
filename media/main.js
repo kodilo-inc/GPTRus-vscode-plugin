@@ -3,6 +3,8 @@
 (function () {
     // eslint-disable-next-line no-undef
     const vscode = acquireVsCodeApi();
+    const { marked } = globalThis.marked;
+
     let isLoading = false;
     let chatState = [];
     const tokenInput = document.getElementById('api-token-input');
@@ -75,7 +77,7 @@
                             ? 'bot-message'
                             : 'user-message'
                     );
-                    div.textContent = element.text;
+                    div.innerHTML = marked.parse(element.text);
                     responseBox.appendChild(div);
                 });
                 if (chatState[chatState.length - 1]?.role === 'assistant') {
