@@ -115,21 +115,6 @@
     function sendMessage() {
         const userMessage = userMessageInput?.value;
 
-        const newPost = {
-            modelUri: 'gpt://b1g1tt95jarp1kbk20vf/yandexgpt-lite',
-            completionOptions: {
-                stream: false,
-                temperature: 0.6,
-                maxTokens: '2000',
-            },
-            messages: [
-                {
-                    role: 'user',
-                    text: userMessage,
-                },
-            ],
-        };
-
-        vscode.postMessage({ type: 'sendMessage', message: newPost });
+        vscode.postMessage({ type: 'sendMessage', message: userMessage });
     }
 })();

@@ -92,16 +92,24 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                     break;
                 }
                 case 'sendMessage': {
-                    const requestData = { ...data.message };
-                    chatState.push(requestData.messages[0]);
+                    chatState.push({ role: 'user', text: data.message });
                     vscode.commands.executeCommand(
                         'GPTRus.updateChat',
                         chatState
                     );
-                    requestData.messages = chatState;
 
                     const settings: settings | undefined =
                         this.globalState.get('settings');
+
+                    const newPost = {
+                        modelUri: `gpt://${settings?.catalogueId}/yandexgpt-lite`,
+                        completionOptions: {
+                            stream: false,
+                            temperature: 0.6,
+                            maxTokens: '2000',
+                        },
+                        messages: chatState,
+                    };
 
                     fetch(
                         'https://d5dqa8btt79oqqp2j9hf.apigw.yandexcloud.net/gpt',
@@ -112,17 +120,20 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                                 Authorization: `${settings?.token}`,
                                 'Catalogue-Id': `${settings?.catalogueId}`,
                             },
-                            body: JSON.stringify(requestData),
+                            body: JSON.stringify(newPost),
                         }
                     )
                         .then((response) => response.json())
                         .then(({ result }) => {
-                            chatState.push(result.alternatives[0].message);
+                            chatState.push(result?.alternatives[0].message);
                             console.log('chatState after response', chatState);
                             vscode.commands.executeCommand(
                                 'GPTRus.updateChat',
                                 chatState
                             );
+                        })
+                        .catch((err) => {
+                            console.log('err', err);
                         });
                 }
             }
