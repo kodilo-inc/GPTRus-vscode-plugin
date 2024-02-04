@@ -42,7 +42,8 @@ body {
 .chat-box {
 	margin-bottom: 8px;
 	padding: 4px;
-	min-height: 30px
+	min-height: 30px;
+	white-space: pre-wrap;
 }
 
 .bot-message {
