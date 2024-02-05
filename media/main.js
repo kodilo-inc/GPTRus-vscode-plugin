@@ -1,9 +1,21 @@
 // This script will be run within the webview itself
 // It cannot access the main VS Code APIs directly.
+import hljs from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/highlight.min.js';
 (function () {
     // eslint-disable-next-line no-undef
     const vscode = acquireVsCodeApi();
-    const { marked } = globalThis.marked;
+    const { markedHighlight } = globalThis.markedHighlight;
+
+    const { Marked } = globalThis.marked;
+
+    const marked = new Marked(
+        markedHighlight({
+            langPrefix: 'hljs language-',
+            highlight(code, lang, info) {
+                return hljs.highlightAuto(code).value;
+            },
+        })
+    );
 
     let isLoading = false;
     let chatState = [];

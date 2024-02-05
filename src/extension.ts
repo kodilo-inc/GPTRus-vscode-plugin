@@ -233,9 +233,11 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                 <div id="progress-bar" class="progress-bar hide">
                     <div class="progress-bar-value"></div>
                 </div>
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/dark.min.css">
+                <script src="https://cdn.jsdelivr.net/npm/marked-highlight/lib/index.umd.js"></script>
 
                 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-                <script nonce="${nonce}" src="${scriptUri}"></script>
+                <script type="module" nonce="${nonce}" src="${scriptUri}"></script>
 
 			</body>
 			</html>`;

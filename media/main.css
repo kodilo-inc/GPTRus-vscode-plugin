@@ -65,6 +65,11 @@ body {
 pre {
 	background-color: var(--vscode-textPreformat-background);
 	text-wrap: balance;
+	padding: 4px;
+}
+
+code {
+	font-size: 11px;
 }
 
 .user-input {
