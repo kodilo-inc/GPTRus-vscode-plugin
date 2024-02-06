@@ -24,6 +24,16 @@ import hljs from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/
     const userMessageInput = document.getElementById('user-message-input');
     const sendBtn = document.getElementById('send-btn');
 
+    const userSubmitHandler = () => {
+        if (isLoading || !userMessageInput.value) {
+            return;
+        }
+        isLoading = true;
+        document.getElementById('progress-bar').classList.remove('hide');
+        sendMessage();
+        userMessageInput.value = '';
+    };
+
     tokenInput.addEventListener('input', () => {
         if (tokenInput.value) {
             tokenInput.classList.remove('settings-input__error');
@@ -57,14 +67,12 @@ import hljs from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/
         });
     });
 
-    sendBtn?.addEventListener('click', () => {
-        if (isLoading || !userMessageInput.value) {
-            return;
+    sendBtn?.addEventListener('click', userSubmitHandler);
+    window.addEventListener('keydown', function (event) {
+        // Check if the Ctrl key or the Command key (on a Mac) + Enter is pressed
+        if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+            userSubmitHandler();
         }
-        isLoading = true;
-        document.getElementById('progress-bar').classList.remove('hide');
-        sendMessage();
-        userMessageInput.value = '';
     });
 
     window.onload = () => {
