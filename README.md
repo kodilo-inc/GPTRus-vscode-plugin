@@ -2,6 +2,4 @@
 
 Для работы нужно иметь аккаунт в Yandex.Cloud и [выписать API-токен](https://cloud.yandex.ru/ru/docs/iam/operations/api-key/create#console_1). 
 
-[Тарифы на использование YandexGPT](https://cloud.yandex.ru/ru/docs/yandexgpt/pricing). Это вы платите Яндексу. Использование расширения бесплатно.
-
-Сейчас есть ограничение: 1 000 000 обращений к боту в месяц. Это суммарное ограничение для всех пользователей расширения суммарно, а не для каждого по отдельности. 
+[Тарифы на использование YandexGPT](https://cloud.yandex.ru/ru/docs/yandexgpt/pricing). Это плата Яндексу за использование YandexGPT API. Использование расширения бесплатно.
