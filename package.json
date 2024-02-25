@@ -47,19 +47,12 @@
 		},
 		"commands": [
 			{
-				"command": "GPTRus.addColor",
-				"category": "Calico Colors",
-				"title": "Add Color"
-			},
-			{
 				"command": "GPTRus.goToSettings",
-				"category": "Calico Colors",
 				"title": "Настроить заново",
 				"icon": "$(plug)"
 			},
 			{
 				"command": "GPTRus.clearChat",
-				"category": "Calico Colors",
 				"title": "Очистить чат (перестанет использоваться как контекст)",
 				"icon": "$(clear-all)"
 			}
