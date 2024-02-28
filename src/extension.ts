@@ -46,6 +46,11 @@ export function activate(context: vscode.ExtensionContext) {
             provider.goToSettings();
         })
     );
+    context.subscriptions.push(
+        vscode.commands.registerCommand('GPTRus.explainSelected', (data) => {
+            provider.explainSelected();
+        })
+    );
 }
 
 class ChatViewProvider implements vscode.WebviewViewProvider {
@@ -92,48 +97,8 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
                     break;
                 }
                 case 'sendMessage': {
-                    chatState.push({ role: 'user', text: data.message });
-                    vscode.commands.executeCommand(
-                        'GPTRus.updateChat',
-                        chatState
-                    );
-
-                    const settings: settings | undefined =
-                        this.globalState.get('settings');
-
-                    const newPost = {
-                        modelUri: `gpt://${settings?.catalogueId}/yandexgpt-lite`,
-                        completionOptions: {
-                            stream: false,
-                            temperature: 0.6,
-                            maxTokens: '2000',
-                        },
-                        messages: chatState,
-                    };
-
-                    fetch(
-                        'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
-                        {
-                            method: 'POST',
-                            body: JSON.stringify(newPost),
-                            headers: {
-                                'content-type': 'application/json',
-                                Authorization: `Api-Key ${settings?.token}`,
-                                'x-folder-id': `${settings?.catalogueId}`,
-                            },
-                        }
-                    )
-                        .then((response) => response.json())
-                        .then(({ result }) => {
-                            chatState.push(result?.alternatives[0].message);
-                            vscode.commands.executeCommand(
-                                'GPTRus.updateChat',
-                                chatState
-                            );
-                        })
-                        .catch((err) => {
-                            console.log('error', err);
-                        });
+                    this.sendMessage(data.message);
+                    break;
                 }
             }
         });
@@ -169,6 +134,64 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 
     public goToSettings() {
         vscode.commands.executeCommand('GPTRus.initView', 'home');
+    }
+
+    public explainSelected() {
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) {
+            return;
+        }
+        const selection = editor.document.getText(editor.selection);
+        if (!selection) {
+            return;
+        }
+        this.clearChat();
+        chatState.push({
+            role: 'system',
+            text: 'Ты — опытный программист.',
+        });
+        vscode.commands.executeCommand('workbench.view.extension.GPTrus');
+        this.sendMessage(
+            'Объясни следующий код: \n\n ```\n' + selection + '\n```'
+        );
+    }
+
+    public sendMessage(message: string) {
+        chatState.push({ role: 'user', text: message });
+        vscode.commands.executeCommand('GPTRus.updateChat', chatState);
+
+        const settings: settings | undefined = this.globalState.get('settings');
+
+        const newPost = {
+            modelUri: `gpt://${settings?.catalogueId}/yandexgpt-lite`,
+            completionOptions: {
+                stream: false,
+                temperature: 0.6,
+                maxTokens: '2000',
+            },
+            messages: chatState,
+        };
+
+        fetch(
+            'https://llm.api.cloud.yandex.net/foundationModels/v1/completion',
+            {
+                method: 'POST',
+                body: JSON.stringify(newPost),
+                headers: {
+                    'content-type': 'application/json',
+                    Authorization: `Api-Key ${settings?.token}`,
+                    'x-folder-id': `${settings?.catalogueId}`,
+                },
+            }
+        )
+            .then((response) => response.json())
+            .then(({ result }) => {
+                chatState.push(result?.alternatives[0].message);
+                vscode.commands.executeCommand('GPTRus.updateChat', chatState);
+            })
+            .catch((err) => {
+                console.log('error', err);
+            });
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {

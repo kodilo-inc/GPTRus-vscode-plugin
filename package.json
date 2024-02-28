@@ -47,6 +47,10 @@
 		},
 		"commands": [
 			{
+				"command": "GPTRus.explainSelected",
+				"title": "Объясни выделенный кусок"
+			},
+			{
 				"command": "GPTRus.goToSettings",
 				"title": "Настроить заново",
 				"icon": "$(plug)"
@@ -68,6 +72,11 @@
 					"command": "GPTRus.clearChat",
 					"group": "navigation",
 					"when": "view == GPTRus.chatView"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "GPTRus.explainSelected"
 				}
 			]
 		}

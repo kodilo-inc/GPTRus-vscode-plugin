@@ -91,6 +91,9 @@ import hljs from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/
                 const responseBox = document.getElementById('response-box');
                 responseBox.replaceChildren();
                 chatState.forEach((element) => {
+                    if (element.role === 'system') {
+                        return;
+                    }
                     const div = document.createElement('div');
                     div.classList.add(
                         element.role === 'assistant'
