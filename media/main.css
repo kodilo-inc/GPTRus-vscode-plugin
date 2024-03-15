@@ -68,8 +68,9 @@ pre {
 	padding: 4px;
 }
 
-code {
+pre code {
 	font-size: 11px;
+	background-color: unset;
 }
 
 .user-input {
