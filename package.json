@@ -1,7 +1,7 @@
 {
 	"name": "GPTRus",
 	"description": "Chat for yandexGPT",
-	"version": "0.3.3",
+	"version": "0.3.4",
 	"publisher": "kodilo",
 	"private": false,
 	"license": "MIT",
