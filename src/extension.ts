@@ -185,12 +185,21 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
             }
         )
             .then((response) => response.json())
-            .then(({ result }) => {
+            .then((response) => {
+                const result = response.result;
+                if (response.error) {
+                    vscode.window.showErrorMessage(
+                        `ОШИБКА ОТ GPTrus: ${JSON.stringify(response)}`
+                    );
+                }
                 chatState.push(result?.alternatives[0].message);
                 vscode.commands.executeCommand('GPTRus.updateChat', chatState);
             })
             .catch((err) => {
                 console.log('error', err);
+                vscode.window.showErrorMessage(
+                    `ОШИБКА ОТ GPTrus: ${JSON.stringify(err)}`
+                );
             });
     }
 
