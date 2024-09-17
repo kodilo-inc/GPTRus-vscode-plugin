@@ -112,6 +112,13 @@ input.settings-input__error {
 	margin-top: 24px;
 }
 
+.model-select {
+	padding: 4px;
+	color: var(--vscode-foreground);
+	background-color: var(--vscode-input-background);
+	margin-top: 4px;
+}
+
 @keyframes indeterminateAnimation {
   0% {
     transform:  translateX(0) scaleX(0);

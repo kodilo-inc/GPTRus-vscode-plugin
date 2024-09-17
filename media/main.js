@@ -142,7 +142,13 @@ import hljs from 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/es/
 
     function sendMessage() {
         const userMessage = userMessageInput?.value;
+        const modelSelectedByUser =
+            document.getElementById('ya-gpt-model')?.value;
 
-        vscode.postMessage({ type: 'sendMessage', message: userMessage });
+        vscode.postMessage({
+            type: 'sendMessage',
+            message: userMessage,
+            model: modelSelectedByUser,
+        });
     }
 })();
